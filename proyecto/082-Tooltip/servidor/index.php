@@ -1,48 +1,63 @@
 <?php
 
-	ini_set('display_errors', 1);																								// Activo errores
-	ini_set('display_startup_errors', 1);																				// Activo errores de inicio
-	error_reporting(E_ALL);																											// 
+	ini_set('display_errors', 1);  // Activo la visualización de errores en el navegador
+	ini_set('display_startup_errors', 1);  // Activo los errores de inicio de PHP
+	error_reporting(E_ALL);  // Establezco el nivel de reporte de errores a todos los errores posibles
 
-	include "ConexionDB.php";																										// incluyo el archivo en el cual se encuentra la clase
+	include "ConexionDB.php";  // Incluyo el archivo que contiene la clase de conexión a la base de datos
 
-	$conexion = new conexionDB();																								// Creo una nueva instancia de la clase
-	if(isset($_GET['o'])){
-		switch($_GET['o']){
+	$conexion = new conexionDB();  // Creo una nueva instancia de la clase conexionDB para gestionar las conexiones
+
+	// Verifico si se ha recibido un parámetro 'o' en la URL
+	if (isset($_GET['o'])) {
+		switch ($_GET['o']) {  // Dependiendo del valor del parámetro 'o', ejecuto un caso u otro
 			case "listatablas":
-				echo $conexion->listadoTablas();																						// Llamo a un metodo
+				// Si 'o' es "listatablas", llamo al método listadoTablas() y muestro el resultado
+				echo $conexion->listadoTablas();
 				break;
 			case "tabla":
-				echo $conexion->seleccionaTabla($_GET['tabla']);																						// Llamo a un metodo
+				// Si 'o' es "tabla", llamo al método seleccionaTabla() pasando el parámetro 'tabla' recibido por GET
+				echo $conexion->seleccionaTabla($_GET['tabla']);
 				break;
 			case "columnastabla":
-				echo $conexion->columnasTabla($_GET['tabla']);																						// Llamo a un metodo
+				// Si 'o' es "columnastabla", llamo al método columnasTabla() pasando el parámetro 'tabla' recibido por GET
+				echo $conexion->columnasTabla($_GET['tabla']);
 				break;
 			case "eliminar":
-				echo $conexion->eliminaTabla($_GET['tabla'],$_GET['id']);																						// Llamo a un metodo
+				// Si 'o' es "eliminar", llamo al método eliminaTabla() pasando los parámetros 'tabla' y 'id' recibidos por GET
+				echo $conexion->eliminaTabla($_GET['tabla'], $_GET['id']);
 				break;
 			case "buscar":
-				$json = file_get_contents('php://input');                   								// Recojo los datos que vienen en json desde la petición del cliente
-        		$datos = json_decode($json, true);																					// Me aseguro que ese json tenga una forma que PHP pueda entender
-				echo $conexion->buscar($_GET['tabla'],$datos);																						// Llamo a un metodo
+				// Si 'o' es "buscar", recibo los datos JSON enviados en la petición del cliente
+				$json = file_get_contents('php://input');  // Obtengo el JSON enviado en la solicitud
+        		$datos = json_decode($json, true);  // Decodifico el JSON para convertirlo en un array de PHP
+				// Llamo al método buscar() pasando la tabla y los datos recibidos y muestro el resultado
+				echo $conexion->buscar($_GET['tabla'], $datos);
 				break;
 			case "actualizar":
-				$json = file_get_contents('php://input');                   								// Recojo los datos que vienen en json desde la petición del cliente
-        		$datos = json_decode($json, true);																					// Me aseguro que ese json tenga una forma que PHP pueda entender
-				echo $conexion->actualizar($datos);																						// Llamo a un metodo
+				// Si 'o' es "actualizar", recibo los datos JSON enviados en la petición del cliente
+				$json = file_get_contents('php://input');  // Obtengo el JSON enviado en la solicitud
+        		$datos = json_decode($json, true);  // Decodifico el JSON para convertirlo en un array de PHP
+				// Llamo al método actualizar() con los datos recibidos y muestro el resultado
+				echo $conexion->actualizar($datos);
 				break;
 			case "buscarSimilar":
-				$json = file_get_contents('php://input');                   								// Recojo los datos que vienen en json desde la petición del cliente
-        		$datos = json_decode($json, true);																					// Me aseguro que ese json tenga una forma que PHP pueda entender
-				echo $conexion->buscarSimilar($_GET['tabla'],$datos);																						// Llamo a un metodo
+				// Si 'o' es "buscarSimilar", recibo los datos JSON enviados en la petición del cliente
+				$json = file_get_contents('php://input');  // Obtengo el JSON enviado en la solicitud
+        		$datos = json_decode($json, true);  // Decodifico el JSON para convertirlo en un array de PHP
+				// Llamo al método buscarSimilar() pasando la tabla y los datos recibidos y muestro el resultado
+				echo $conexion->buscarSimilar($_GET['tabla'], $datos);
 				break;
 			case "insertar":
-				$json = file_get_contents('php://input');                   								// Recojo los datos que vienen en json desde la petición del cliente
-        $datos = json_decode($json, true);																					// Me aseguro que ese json tenga una forma que PHP pueda entender
-				echo $conexion->insertaTabla($_GET['tabla'],$datos);																						// Llamo a un metodo
+				// Si 'o' es "insertar", recibo los datos JSON enviados en la petición del cliente
+				$json = file_get_contents('php://input');  // Obtengo el JSON enviado en la solicitud
+				var_dump($json);  // Muestra el JSON recibido (útil para depuración)
+				$datos = json_decode($json, true);  // Decodifico el JSON para convertirlo en un array de PHP
+				var_dump($datos);  // Muestra los datos decodificados (útil para depuración)
+				// Llamo al método insertaTabla() pasando la tabla y los datos recibidos y muestro el resultado
+				echo $conexion->insertaTabla($_GET['tabla'], $datos);
 				break;
 		}
 	}
-	
 	
 ?>

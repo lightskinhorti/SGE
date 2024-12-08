@@ -1,80 +1,58 @@
+// Variables de estado globales
+let tamanio = 1;
+let cantidadcontraste = 30;
+let invertido = false;
+let contadorFuente = 0;
+const fuentes = ['Sans-serif', 'serif', 'monospace', 'fantasy'];
 
-	let tamanio = 1;
-	let cantidadcontraste = 1
-	let contenedor = document.createElement("div")
-	contenedor.classList.add("jvampliador")
-	let invertido = false;
-	
-	////////////////// AUMENTAR /////////////////
-	
-	let aumentar = document.createElement("button")
-	aumentar.textContent = "+"
-	 aumentar.setAttribute("aria-label","Ampliar")
-	 aumentar.setAttribute("title","Ampliar el tamaño de la letra")
-	
-	contenedor.appendChild(aumentar)
-	aumentar.onclick = function(){
-		tamanio *= 1.1;
-		document.querySelector("body").style.fontSize = tamanio+"em"
-	}
-	
-	////////////////// CONTRASTE /////////////////
-	
-	let contraste = document.createElement("button")
-	contraste.textContent = "C"
-	contraste.setAttribute("aria-label","Contraste")
-	
-	contenedor.appendChild(contraste)
-	contraste.onclick = function(){
-		cantidadcontraste = 30;
-		document.querySelector("body").style.filter = "contrast("+cantidadcontraste+")"
-	}
-	
-	////////////////// INVERTIR /////////////////
-	
-	let invertir = document.createElement("button")
-	invertir.textContent = "I"
-	invertir.setAttribute("aria-label","Invertir")
-	
-	contenedor.appendChild(invertir)
-	invertir.onclick = function(){
-		if(invertido == false){
-			document.querySelector("body").style.filter = "invert(1) hue-rotate(180deg)"
-			invertido = true
-		}else{
-			document.querySelector("body").style.filter = "invert(0) hue-rotate(0deg)"
-			invertido = false
-		}
-	}
-	
-	////////////////// FUENTE /////////////////
-	
-	let fuentes = ['Sans-serif','serif','personalizada','monospace']
-	let contador = 0
-	
-	let fuente = document.createElement("button")
-	fuente.textContent = "F"
-	fuente.setAttribute("aria-label","Cambiar la fuente")
-	
-	contenedor.appendChild(fuente)
-	fuente.onclick = function(){
-		console.log("ok pulsado")
-		document.querySelector("body").style.fontFamily = fuentes[contador]
-		contador++;
-		if(contador == 4){contador = 0;}
-	}
-	
-	////////////////// DISMINUIR /////////////////
-	
-	let disminuir = document.createElement("button")
-	disminuir.textContent = "-"
-	disminuir.setAttribute("aria-label","Disminuir el tamaño de la fuente")
-	contenedor.appendChild(disminuir)
-	
-	disminuir.onclick = function(){
-		tamanio *= 0.9;
-		document.querySelector("body").style.fontSize = tamanio+"em"
-	}
-	
-	document.querySelector("body").appendChild(contenedor)
+// Crea el contenedor para los botones
+let contenedor = document.createElement("div");
+contenedor.classList.add("jvampliador");
 
+// Función para crear botones de forma reutilizable
+function crearBoton(texto, label, titulo, accion) {
+    let boton = document.createElement("button");
+    boton.textContent = texto;
+    boton.setAttribute("aria-label", label);
+    boton.setAttribute("title", titulo);
+    boton.onclick = accion;
+    contenedor.appendChild(boton);
+    return boton;
+}
+
+// Botón para aumentar tamaño de fuente
+crearBoton("+", "Ampliar", "Ampliar el tamaño de la letra", function () {
+    tamanio *= 1.1;
+    document.querySelector("body").style.fontSize = tamanio + "em";
+});
+
+// Botón para cambiar contraste
+crearBoton("C", "Contraste", "Ajustar el contraste de la página", function () {
+    document.querySelector("body").style.filter = "contrast(" + cantidadcontraste + ")";
+});
+
+// Botón para invertir colores
+crearBoton("I", "Invertir", "Invertir los colores de la página", function () {
+    if (!invertido) {
+        document.querySelector("body").style.filter = "invert(1) hue-rotate(180deg)";
+        invertido = true;
+    } else {
+        document.querySelector("body").style.filter = "invert(0) hue-rotate(0deg)";
+        invertido = false;
+    }
+});
+
+// Botón para cambiar fuente
+crearBoton("F", "Cambiar la fuente", "Cambiar el tipo de fuente de la página", function () {
+    document.querySelector("body").style.fontFamily = fuentes[contadorFuente];
+    contadorFuente = (contadorFuente + 1) % fuentes.length;  // Rota entre las fuentes
+});
+
+// Botón para disminuir tamaño de fuente
+crearBoton("-", "Disminuir", "Disminuir el tamaño de la letra", function () {
+    tamanio *= 0.9;
+    document.querySelector("body").style.fontSize = tamanio + "em";
+});
+
+// Agregar el contenedor de botones al cuerpo de la página
+document.querySelector("body").appendChild(contenedor);

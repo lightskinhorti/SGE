@@ -1,22 +1,22 @@
-function convierteTipoDato(tipo){
+function convierteTipoDato(tipo) {
+    let tipodevuelto;  // Variable para almacenar el tipo de dato devuelto
 
-	let tipodevuelto
-	
-    if(tipo.includes("varchar")){														// Si el tipo de dato incluye varchar																	// y le sumo el valor correspondiente al array
- 		tipodevuelto = "text"
-    }else if(tipo.includes("int")){														// Si el tipo de dato incluye int
-    	tipodevuelto = "number"
-    }else if(tipo.includes("date")){														// Si el tipo de dato incluye fecha
-    	tipodevuelto = "date"
-    }else if(tipo.includes("decimal")){														// Si el tipo de dato incluye decimal
-    	tipodevuelto = "number"
-    }else if(tipo.includes("time")){														// Si el tipo de dato incluye decimal
-    	tipodevuelto = "time"
-    }else if(tipo.includes("blob")){														// Si el tipo de dato incluye blob
-    	tipodevuelto = "file"
+    // Comprobamos los distintos tipos de dato y los mapeamos a tipos de entrada HTML
+    if (tipo.includes("varchar")) {
+        tipodevuelto = "text";  // Texto
+    } else if (tipo.includes("int")) {
+        tipodevuelto = "number";  // Número entero
+    } else if (tipo.includes("date")) {
+        tipodevuelto = "date";  // Fecha
+    } else if (tipo.includes("decimal")) {
+        tipodevuelto = "number";  // Número decimal
+    } else if (tipo.includes("time")) {
+        tipodevuelto = "time";  // Hora
+    } else if (tipo.includes("blob")) {
+        tipodevuelto = "file";  // Archivo
+    } else {
+        tipodevuelto = "text";  // Valor predeterminado en caso de que el tipo no coincida
     }
-                
-                
-	return tipodevuelto
-	
+
+    return tipodevuelto;  // Retornamos el tipo convertido
 }

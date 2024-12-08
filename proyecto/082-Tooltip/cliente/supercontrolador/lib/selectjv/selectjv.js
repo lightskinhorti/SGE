@@ -1,113 +1,129 @@
+// Función principal que transforma un elemento <select> en un componente personalizado
+function selectjv(selector) {
 
+  // Array para almacenar contenedores
+  contenedores = [];
+  
+  // Crear un contenedor para el selector
+  contenedores.push(document.createElement("div"));
+  contenedores[contenedores.length - 1].classList.add("selectjv");  // Añadir clase "selectjv" al contenedor
 
-function selectjv(selector){
-
-     contenedores = []                                 // Para cada uno de los selectores               
-    contenedores.push(document.createElement("div"))                         // Creo un div
-    contenedores[contenedores.length-1].classList.add("selectjv")                                    // Le pongo una clase
-    
-    contenedores[contenedores.length-1].onclick = function(e){
-      e.stopPropagation()
-    }
-
-    selector.replaceWith(contenedores[contenedores.length-1])                                                       // Y elimino el select original
-    let caja = document.createElement("div")                                // Creo una caja
-    caja.classList.add("caja")                                              // Le pongo una clase
-    caja.textContent = selector.querySelector("option:first-child").textContent   // Le pongo el texto del primero option
-    contenedores[contenedores.length-1].appendChild(caja)                                            // Lo añado al contenedor
-   contenedores[contenedores.length-1].appendChild(selector)
-    caja.onclick = function(e){                                              // Cuando haga click en la caja
+  // Añadir un evento de clic para evitar la propagación del clic a otros elementos
+  contenedores[contenedores.length - 1].onclick = function(e) {
       e.stopPropagation();
-      caja.classList.add("radio2")                                          // Le cambio la clase del radio
-      let resultados = document.createElement("div")                        // Creo un div de resultados
-      resultados.classList.add("resultados")                                // Le pongo la clase
-      this.appendChild(resultados)                                    // Lo añado al contenedor
+  };
+
+  // Reemplazar el <select> original con el nuevo contenedor
+  selector.replaceWith(contenedores[contenedores.length - 1]);
+
+  // Crear una caja para mostrar el texto de la opción seleccionada
+  let caja = document.createElement("div");
+  caja.classList.add("caja");
+  caja.textContent = selector.querySelector("option:first-child").textContent;  // Establecer el texto de la primera opción
+  contenedores[contenedores.length - 1].appendChild(caja);  // Añadir la caja al contenedor
+  contenedores[contenedores.length - 1].appendChild(selector);  // Añadir el <select> al contenedor
+
+  // Evento para abrir las opciones cuando se hace clic en la caja
+  caja.onclick = function(e) {
+      e.stopPropagation();
+      caja.classList.add("radio2");  // Cambiar la clase de la caja para marcarla como seleccionada
       
-      let buscador = document.createElement("input")                        // Creo un campo input de busqueda
-      buscador.setAttribute("type","search")                                // LE digo que el tipo de input es search
-      buscador.setAttribute("placeholder","busca...")                       // Le pongo un placeholder
-      resultados.appendChild(buscador)                                      // Lo añado al buscador
-     
-      buscador.onclick = function(e){
-      	 console.log("ok hola")
-        e.stopPropagation();
-      }
-      buscador.onkeyup = function(e){                                        // Cuando pulse una tecla en el buscador
-       
-        let busca = this.value                                              // Pongo el contenido en una variable
-        contieneresultados.innerHTML = ""                                         // Vacío los resultados
-        opciones.forEach(function(opcion){                                    // Y para cada una de las opciones
-          if(opcion.textContent.toLowerCase().includes(busca.toLowerCase())){                                 // Si la opcion contiene lo que se esta buscando
-            let texto = document.createElement("p")                             // Creo un elemento de texto
-            texto.textContent = opcion.textContent                                    // Les pongo el texto
-            contieneresultados.appendChild(texto)                                       // Y las añado a los resultados
-            texto.onclick = function(){
-                console.log("has hecho click en una opcion: ",texto.textContent)
-                resultados.remove()
-                 caja.textContent = texto.textContent
-                 let opciones2 = selector.querySelectorAll("option")
-                 console.log(opciones2)
-                 
-                 opciones2.forEach(function(opcion2){
-                    if(opcion2.textContent == texto.textContent){
-                        opcion2.setAttribute("selected",true)
-                    }else{
-                    		opcion2.removeAttribute("selected")
-                    
-                    }
-                 })
-            }
+      let resultados = document.createElement("div");  // Crear el contenedor de los resultados
+      resultados.classList.add("resultados");  // Añadir clase "resultados"
+      this.appendChild(resultados);  // Añadir los resultados al contenedor de la caja
+      
+      // Crear el campo de búsqueda
+      let buscador = document.createElement("input");
+      buscador.setAttribute("type", "search");
+      buscador.setAttribute("placeholder", "busca...");
+      resultados.appendChild(buscador);  // Añadir el campo de búsqueda a los resultados
+      
+      // Evento para manejar el clic en el buscador (no realiza ninguna acción aquí)
+      buscador.onclick = function(e) {
+          console.log("ok hola");
+          e.stopPropagation();
+      };
+
+      // Evento que se dispara cuando el usuario teclea en el campo de búsqueda
+      buscador.onkeyup = function(e) {
+          let busca = this.value;  // Obtener el texto del campo de búsqueda
+          contieneresultados.innerHTML = "";  // Limpiar los resultados anteriores
+
+          // Filtrar las opciones que coinciden con el texto de búsqueda
+          opciones.forEach(function(opcion) {
+              if (opcion.textContent.toLowerCase().includes(busca.toLowerCase())) {
+                  let texto = document.createElement("p");
+                  texto.textContent = opcion.textContent;  // Crear un <p> con el texto de la opción
+                  contieneresultados.appendChild(texto);  // Añadir el texto al contenedor de resultados
+                  
+                  // Evento que se dispara cuando el usuario selecciona una opción
+                  texto.onclick = function() {
+                      console.log("has hecho click en una opcion: ", texto.textContent);
+                      resultados.remove();  // Eliminar los resultados
+                      caja.textContent = texto.textContent;  // Actualizar el texto de la caja con la opción seleccionada
+
+                      // Marcar la opción seleccionada en el <select> original
+                      let opciones2 = selector.querySelectorAll("option");
+                      opciones2.forEach(function(opcion2) {
+                          if (opcion2.textContent == texto.textContent) {
+                              opcion2.setAttribute("selected", true);  // Establecer el atributo "selected"
+                          } else {
+                              opcion2.removeAttribute("selected");  // Eliminar el atributo "selected" de las demás opciones
+                          }
+                      });
+                  };
+              }
+          });
+      };
+
+      // Crear un contenedor para las opciones filtradas
+      let contieneresultados = document.createElement("div");
+      contieneresultados.onclick = function(e) {
+          e.stopPropagation();  // Evitar que el clic se propague
+      };
+
+      // Obtener todas las opciones del <select> original
+      let opciones = selector.querySelectorAll("option");
+      opciones.forEach(function(opcion) {
+          let texto = document.createElement("p");
+          texto.textContent = opcion.textContent;  // Crear un <p> con el texto de la opción
+          contieneresultados.appendChild(texto);  // Añadir el texto al contenedor de resultados
+
+          // Evento que se dispara cuando el usuario selecciona una opción
+          texto.onclick = function() {
+              console.log("has hecho click en una opcion: ", texto.textContent);
+              resultados.remove();  // Eliminar los resultados
+              caja.textContent = texto.textContent;  // Actualizar el texto de la caja con la opción seleccionada
+
+              // Marcar la opción seleccionada en el <select> original
+              let opciones2 = selector.querySelectorAll("option");
+              opciones2.forEach(function(opcion2) {
+                  if (opcion2.textContent == texto.textContent) {
+                      opcion2.setAttribute("selected", true);
+                  } else {
+                      opcion2.removeAttribute("selected");
+                  }
+              });
+          };
+      });
+
+      // Añadir el contenedor de opciones filtradas a los resultados
+      resultados.appendChild(contieneresultados);
+      resultados.onclick = function(e) {
+          e.stopPropagation();  // Evitar que el clic se propague
+      };
+  };
+
+  // Evento para cerrar los resultados al hacer clic fuera del contenedor
+  document.onclick = function() {
+      console.log("ok body");
+      contenedores.forEach(function(contenedor) {
+          try {
+              contenedor.querySelector(".resultados").remove();  // Eliminar los resultados
+              contenedor.querySelector(".caja").classList.remove("radio2");  // Eliminar la clase "radio2"
+          } catch (error) {
+              console.log("error pero no pasa nada");
           }
-        })
-      }
-      
-      let contieneresultados = document.createElement("div")              // Creo un contenedor intermedio
-      contieneresultados.onclick = function(e){
-      	e.stopPropagation();
-      }
-     
-      
-      let opciones = selector.querySelectorAll("option")                    // Selecciono las opciones
-      opciones.forEach(function(opcion){                                    // Y para cada una de las opciones
-        let texto = document.createElement("p")                             // Creo un elemento de texto
-        texto.textContent = opcion.textContent                                    // Les pongo el texto
-        contieneresultados.appendChild(texto)                                       // Y las añado a los resultados
-        texto.onclick = function(){
-            console.log("has hecho click en una opcion: ",texto.textContent)
-            resultados.remove()
-             caja.textContent = texto.textContent
-             let opciones2 = selector.querySelectorAll("option")
-                 console.log(opciones2)
-                 opciones2.forEach(function(opcion2){
-                    if(opcion2.textContent == texto.textContent){
-                        opcion2.setAttribute("selected",true)
-                    }else{
-                    		opcion2.removeAttribute("selected")
-                    	
-                    }
-                 })
-        }
-      })
-      
-      resultados.appendChild(contieneresultados)                            // A los resultados les añado el contenedor intermedio
-      resultados.onclick = function(e){
-      	e.stopPropagation();
-      }
-    }
-
- 
-    document.onclick = function(){
-      console.log("ok body")
-      contenedores.forEach(function(contenedor){
-      console.log(contenedor)
-      try{
-        contenedor.querySelector(".resultados").remove()
-        contenedor.querySelector(".caja").classList.remove("radio2") 
-      }catch(error){
-        console.log("error pero no pasa nada")
-      }
-        
-      })
-    } 
+      });
+  };
 }
-
