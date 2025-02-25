@@ -1,0 +1,148 @@
+<style>
+	#contenedor{
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-items: stretch;
+		align-content: stretch;
+	}
+	.izquierda{
+		width:30%;
+	}
+	.derecha{
+		width:70%;
+	}
+	input[type=checkbox],p{
+		display:inline-block;
+	}
+	label{
+		width:100%;
+		display:block;
+	}
+	#contienecampos{
+		column-count:2;
+	}
+	.peticion{
+		background:black;
+		color:white;
+		padding:20px;
+		border-radius:20px;
+		font-family:monospace;
+		text-shadow:0px 0px 4px green,0px 0px 4px green,0px 0px 4px green,0px 0px 4px green;
+		margin-bottom:20px;
+	}
+</style>
+<h1></h1>
+<div id="contenedor">
+    <div class="izquierda">
+        <p>1.-Selecciona la tabla para trabajar</p>
+        <select id="tablas">
+            <option>Selecciona una tabla...</option>
+        </select>
+        <p>2.-Selecciona los campos con los que quieres trabajar</p>
+        <div id="contienecampos"></div>
+        <p>3.-Selecciona los campos con los que quieres trabajar</p>
+        <input type="number" id="limite">
+    </div>
+    <div class="derecha">
+        <div class="peticion"></div>
+        <div id="resultadotabla"></div>
+    </div>
+</div>
+
+<script>
+    // Variables iniciales para la consulta SQL
+    let peticion = "SELECT "; // Inicio de la consulta
+    let tabla = ""; // Nombre de la tabla seleccionada
+    let columnas = "*"; // Columnas seleccionadas, por defecto todas
+    let desde = " FROM "; // Parte fija de la consulta
+    let limite = 100; // Límite de registros por defecto
+
+    // Ejecutar la consulta inicial con valores predeterminados
+    ejecutaPeticion();
+
+    // Petición al servidor para obtener la lista de tablas
+    fetch("../../servidor/?o=listatablas")
+        .then(function(response) {
+            return response.json(); // Convertir la respuesta en JSON
+        })
+        .then(function(datos) {
+            // Iterar sobre las tablas y agregarlas al <select>
+            datos.forEach(function(tabla) {
+                let elemento = document.createElement("option"); // Crear opción
+                elemento.value = tabla.Tables_in_crimson; // Asignar valor
+                elemento.textContent = tabla.Tables_in_crimson; // Asignar texto visible
+                document.querySelector("#tablas").appendChild(elemento); // Agregar al <select>
+            });
+        });
+
+    // Evento que se ejecuta cuando se selecciona una tabla
+    document.querySelector("#tablas").onchange = function () {
+        console.log("Tabla seleccionada, vamos con el siguiente paso");
+        tabla = this.value; // Guardar la tabla seleccionada
+        ejecutaPeticion(); // Actualizar la consulta SQL
+
+        // Petición al servidor para obtener las columnas de la tabla seleccionada
+        fetch("../../servidor/?o=columnastabla&tabla=" + this.value)
+            .then(function(response) {
+                return response.json(); // Convertir la respuesta en JSON
+            })
+            .then(function(datos) {
+                let contenedor = document.querySelector("#contienecampos");
+                contenedor.innerHTML = ""; // Limpiar el contenedor antes de agregar nuevos elementos
+
+                // Iterar sobre las columnas de la tabla
+                datos.forEach(function(dato) {
+                    let etiqueta = document.createElement("label"); // Crear etiqueta
+                    let elemento = document.createElement("input"); // Crear checkbox
+                    elemento.setAttribute("type", "checkbox"); // Definir tipo checkbox
+                    elemento.setAttribute("name", dato.Field); // Asignar nombre al checkbox
+                    elemento.classList.add("campo"); // Agregar clase
+
+                    // Evento para actualizar la consulta SQL cuando se selecciona/deselecciona un campo
+                    elemento.onclick = function () {
+                        let campos = document.querySelectorAll(".campo"); // Obtener todos los checkboxes
+                        columnas = ""; // Reiniciar la variable de columnas
+                        campos.forEach(function(campo) {
+                            if (campo.checked) {
+                                columnas += campo.name + ","; // Agregar columna seleccionada
+                            }
+                        });
+                        columnas = columnas.slice(0, -1); // Eliminar la última coma
+                        ejecutaPeticion(); // Actualizar la consulta SQL
+                    };
+
+                    // Crear el texto del label con el nombre del campo
+                    etiqueta.appendChild(elemento); // Agregar checkbox al label
+                    let texto = document.createElement("p"); // Crear elemento <p>
+                    texto.textContent = dato.Field; // Asignar el nombre del campo
+                    etiqueta.appendChild(texto); // Agregar el texto al label
+
+                    // Agregar el label completo al contenedor
+                    contenedor.appendChild(etiqueta);
+                });
+            });
+    };
+
+    // Función que construye y ejecuta la consulta SQL
+    function ejecutaPeticion() {
+        let sql = peticion + columnas + desde + tabla + " LIMIT " + limite; // Construcción de la consulta SQL
+        document.querySelector(".peticion").textContent = sql; // Mostrar la consulta en pantalla
+
+        // Petición al servidor para ejecutar la consulta SQL y mostrar los resultados
+        fetch("ejecuta.php?sql=" + encodeURI(sql))
+            .then(function(response) {
+                return response.text(); // Convertir la respuesta en texto
+            })
+            .then(function(datos) {
+                document.querySelector("#resultadotabla").innerHTML = datos; // Mostrar resultados en la tabla
+            });
+    }
+
+    // Evento para actualizar el límite de registros cuando el usuario lo cambia
+    document.querySelector("#limite").onchange = function() {
+        limite = this.value; // Guardar el nuevo valor del límite
+        ejecutaPeticion(); // Actualizar la consulta SQL
+    };
+</script>

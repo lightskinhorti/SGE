@@ -1,0 +1,76 @@
+/* Estilos Futuristas 2050 */
+
+/* Estilos título tabla */
+.titulotabla {
+	display: inline-block;
+	padding: 15px 40px;
+	background: linear-gradient(135deg, #00ffea, #007bff);
+	color: white;
+	border-radius: 12px;
+	min-width: 320px;
+	min-height: 50px;
+	font-weight: bold;
+	box-shadow: 0 0 15px rgba(0, 255, 234, 0.8);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: transform 0.3s ease;
+}
+.titulotabla:hover {
+	transform: scale(1.05);
+}
+.titulotabla * {
+	margin: 0;
+}
+.titulotabla h5 {
+	font-size: 18px;
+}
+.titulotabla p {
+	font-size: 14px;
+	color: #d1f7ff;
+}
+
+/* Estilos cabecera */
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #111;
+	color: #00ffea;
+	padding: 15px;
+	border-bottom: 4px solid #00ffea;
+	box-shadow: 0 0 20px rgba(0, 255, 234, 0.6);
+	text-transform: uppercase;
+}
+header h1 {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: #00ffea;
+	font-family: 'Orbitron', sans-serif;
+}
+h1 img {
+	width: 70px;
+	filter: drop-shadow(0 0 10px #00ffea);
+}
+
+/* Botones de navegación */
+header nav button {
+	background: linear-gradient(135deg, #00ffea, #007bff);
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	margin: 5px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 255, 234, 0.8);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+header nav button:hover {
+	background: linear-gradient(135deg, #007bff, #00ffea);
+	color: black;
+	box-shadow: 0 0 20px rgba(0, 255, 234, 1);
+	transform: scale(1.1);
+}
